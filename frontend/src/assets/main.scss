@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Custom Styles
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.p2p-custom-card {
+    @apply bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-xl;
+}
+
+/* Bloquear scroll vertical global en toda la aplicación */
+html, body, #app {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+}
+
+/* Asegurar que los contenedores principales respeten el alto completo sin generar desbordamientos */
+.v-application {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.v-main {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
