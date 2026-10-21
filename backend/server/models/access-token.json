@@ -1,0 +1,44 @@
+{
+    "name": "AccessToken",
+    "base": "PersistedModel",
+    "strict": true,
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "id": {
+            "type": "string",
+            "id": true,
+            "defaultFn": "guid"
+        },
+        "ttl": {
+            "type": "number",
+            "default": 1209600
+        },
+        "created": {
+            "type": "date",
+            "defaultFn": "now"
+        },
+        "userId": {
+            "type": "string"
+        }
+    },
+    "validations": [],
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "User",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [
+        {
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY"
+        }
+    ],
+    "methods": {}
+}
