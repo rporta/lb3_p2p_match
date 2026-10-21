@@ -1,0 +1,19 @@
+{
+  "name": "lb3_p2p_match-backend",
+  "version": "1.0.0",
+  "description": "Backend LoopBack 3 for P2P Match with Socket.IO",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "helmet": "^4.6.0",
+    "loopback": "^3.27.0",
+    "loopback-boot": "^2.27.1",
+    "serve-favicon": "^2.5.0",
+    "socket.io": "^4.7.2",
+    "strong-error-handler": "^4.0.0"
+  },
+  "license": "MIT"
+}

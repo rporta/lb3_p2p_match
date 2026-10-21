@@ -1,0 +1,36 @@
+{
+    "name": "P2PMatchModel",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "peerId": {
+            "type": "string",
+            "required": true
+        },
+        "targetPeerId": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string",
+            "default": "available"
+        },
+        "createdAt": {
+            "type": "date",
+            "defaultFn": "now"
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+        {
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW"
+        }
+    ],
+    "methods": {}
+}
