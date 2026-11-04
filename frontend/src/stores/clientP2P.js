@@ -13,6 +13,11 @@ export const useClientP2PStore = defineStore('clientP2P', {
         apellido: '',
         alias: '',
         edad: '',
+        sexo: '',              // <--- Nuevo campo
+        descripcion: '',       // <--- Nuevo campo
+        buscando: '',          // <--- Nuevo campo ("Qué estás buscando")
+        fotosPerfil: [],       // <--- Array para almacenar hasta 5 fotos (base64 o IDs)
+        videosPerfil: [],      // <--- Array para almacenar hasta 5 videos (opcional)
         billetera: {
             creditos: 0,
             corazon: 0,
@@ -41,11 +46,14 @@ export const useClientP2PStore = defineStore('clientP2P', {
             this.estado = 'desconectado'
         },
 
-        setDatosPersonales(nombre, apellido, alias, edad) {
+        setDatosPersonales(nombre, apellido, alias, edad, sexo, descripcion, buscando) {
             if (nombre !== undefined) this.nombre = nombre
             if (apellido !== undefined) this.apellido = apellido
             if (alias !== undefined) this.alias = alias
             if (edad !== undefined) this.edad = edad
+            if (sexo !== undefined) this.sexo = sexo
+            if (descripcion !== undefined) this.descripcion = descripcion
+            if (buscando !== undefined) this.buscando = buscando
         },
 
         actualizarBilletera(nuevosDatos) {
@@ -69,7 +77,6 @@ export const useClientP2PStore = defineStore('clientP2P', {
                         const lon = position.coords.longitude
 
                         try {
-                            // Geocodificación inversa real mediante API gratuita OpenStreetMap (Nominatim)
                             const response = await fetch(
                                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
                             )
@@ -77,7 +84,6 @@ export const useClientP2PStore = defineStore('clientP2P', {
 
                             if (data && data.address) {
                                 const addr = data.address
-
                                 const barrio = addr.suburb || addr.neighbourhood || addr.residential || addr.quarter || ''
                                 const localidad = addr.city || addr.town || addr.village || addr.city_district || ''
                                 const provincia = addr.state || addr.region || ''
@@ -112,6 +118,18 @@ export const useClientP2PStore = defineStore('clientP2P', {
             }
         },
 
+        async agregarVideo(fileBlob) {
+            try {
+                const videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7)
+                await localforage.setItem(videoId, fileBlob)
+                this.videosIds.push(videoId)
+                return videoId
+            } catch (error) {
+                console.error("Error al guardar el video en IndexedDB:", error)
+                throw error
+            }
+        },
+
         async obtenerMedia(mediaId) {
             try {
                 const blob = await localforage.getItem(mediaId)
@@ -132,7 +150,11 @@ export const useClientP2PStore = defineStore('clientP2P', {
             {
                 key: 'clientP2P',
                 storage: localStorage,
-                paths: ['nombre', 'apellido', 'alias', 'edad', 'billetera', 'estado', 'avatarUrl', 'fotosIds', 'videosIds']
+                paths: [
+                    'nombre', 'apellido', 'alias', 'edad', 'sexo',
+                    'descripcion', 'buscando', 'fotosPerfil', 'videosPerfil',
+                    'billetera', 'estado', 'avatarUrl', 'fotosIds', 'videosIds'
+                ]
             }
         ]
     }

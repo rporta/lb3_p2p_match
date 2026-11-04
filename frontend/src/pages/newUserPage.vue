@@ -15,7 +15,7 @@
         <!-- Carrusel de Sub-vistas centrado -->
         <div v-else class="carousel-container">
 
-            <!-- SUB-VIEW 1: Datos Personales con Iconos y Centrado -->
+            <!-- SUB-VIEW 1: Datos Personales (Nombre, Apellido, Alias) -->
             <div v-if="currentStep === 1" class="sub-view-card">
                 <h2>Completa tus datos</h2>
 
@@ -64,15 +64,14 @@
                 </div>
             </div>
 
-            <!-- SUB-VIEW 2: Edad / Fecha de Nacimiento -->
+            <!-- SUB-VIEW 2: Edad / Fecha de Nacimiento y Sexo -->
             <div v-if="currentStep === 2" class="sub-view-card">
-                <h2>¿Qué edad tienes?</h2>
+                <h2>Edad y Sexo</h2>
 
                 <div class="input-group">
                     <label>Fecha de Nacimiento (DD/MM/YYYY)</label>
                     <div class="input-with-icon">
                         <span class="input-icon"><Icon icon="mdi:calendar" /></span>
-                        <!-- Input formateado en tiempo real con tipeo continuo (ej. 14081990) -->
                         <input
                             type="text"
                             v-model="inputValue"
@@ -82,7 +81,6 @@
                         />
                     </div>
 
-                    <!-- Menú de Vuetify Date Picker -->
                     <v-menu
                         v-model="menuDate"
                         :close-on-content-click="false"
@@ -107,20 +105,27 @@
                             @update:model-value="onDateSelected"
                         ></v-date-picker>
                     </v-menu>
-                    <!-- Mostramos el error de Vee-Validate solo si la fecha no está completa -->
                     <span class="error-msg" v-if="!isDateComplete">{{ errors.edad }}</span>
+                </div>
+
+                <div class="input-group">
+                    <label>Sexo</label>
+                    <div class="options-grid">
+                        <button
+                            type="button"
+                            v-for="opt in ['Hombre', 'Mujer', 'Otro']"
+                            :key="opt"
+                            :class="['option-chip', sexo === opt ? 'active' : '']"
+                            @click="sexo = opt"
+                        >
+                            {{ opt }}
+                        </button>
+                    </div>
                 </div>
 
                 <div class="actions-footer">
                     <button class="btn-secondary" @click="currentStep = 1">
                         <Icon icon="mdi:arrow-left" /> Atrás
-                    </button>
-                    <button
-                        v-if="edad || inputValue"
-                        class="btn-clear"
-                        @click="limpiarFecha"
-                    >
-                        <Icon icon="mdi:broom" /> Limpiar
                     </button>
                     <button
                         class="btn-primary"
@@ -132,9 +137,9 @@
                 </div>
             </div>
 
-            <!-- SUB-VIEW 3: Foto de Perfil -->
+            <!-- SUB-VIEW 3: Foto de Perfil Principal (Avatar) -->
             <div v-if="currentStep === 3" class="sub-view-card">
-                <h2>Carga una foto de perfil</h2>
+                <h2>Foto Principal de Perfil</h2>
 
                 <div class="avatar-section">
                     <div class="avatar-circle" @click="triggerFileInput">
@@ -158,7 +163,7 @@
                         <Icon icon="mdi:arrow-left" /> Atrás
                     </button>
                     <button
-                        v-if="avatarUrl || avatarBlob"
+                        v-if="avatarUrl"
                         class="btn-clear"
                         @click="limpiarAvatar"
                     >
@@ -167,9 +172,156 @@
                     <button
                         class="btn-primary"
                         :disabled="!isStep3Valid"
+                        @click="currentStep = 4"
+                    >
+                        Siguiente <Icon icon="mdi:arrow-right" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 4: Descripción del Perfil -->
+            <div v-if="currentStep === 4" class="sub-view-card">
+                <h2>Acerca de ti</h2>
+
+                <div class="input-group">
+                    <label>Escribe una descripción breve</label>
+                    <textarea
+                        v-model="descripcion"
+                        rows="4"
+                        placeholder="Cuéntanos un poco sobre tus gustos, pasatiempos..."
+                        class="textarea-input"
+                    ></textarea>
+                    <span class="error-msg">{{ errors.descripcion }}</span>
+                </div>
+
+                <div class="actions-footer">
+                    <button class="btn-secondary" @click="currentStep = 3">
+                        <Icon icon="mdi:arrow-left" /> Atrás
+                    </button>
+                    <button
+                        class="btn-primary"
+                        :disabled="!isStep4Valid"
+                        @click="currentStep = 5"
+                    >
+                        Siguiente <Icon icon="mdi:arrow-right" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 5: Carga de 5 Fotos de Perfil -->
+            <div v-if="currentStep === 5" class="sub-view-card">
+                <h2>Galería de Fotos (Hasta 5)</h2>
+                <p class="step-subtitle">Añade fotos adicionales para mostrar tu perfil.</p>
+
+                <div class="photos-grid">
+                    <div
+                        v-for="(foto, index) in 5"
+                        :key="index"
+                        class="photo-slot"
+                        @click="triggerMultiPhotoInput(index)"
+                    >
+                        <img v-if="fotosPerfil[index]" :src="fotosPerfil[index]" class="avatar-img" />
+                        <div v-else class="plus-icon-container">
+                            <Icon icon="mdi:plus" width="28" height="28" style="color: #0056b3;" />
+                        </div>
+                    </div>
+                </div>
+                <input
+                    ref="multiPhotoInput"
+                    type="file"
+                    accept="image/*"
+                    class="hidden-input"
+                    @change="onMultiPhotoSelected"
+                />
+
+                <div class="actions-footer">
+                    <button class="btn-secondary" @click="currentStep = 4">
+                        <Icon icon="mdi:arrow-left" /> Atrás
+                    </button>
+                    <button
+                        class="btn-primary"
+                        :disabled="fotosPerfil.filter(Boolean).length === 0"
+                        @click="currentStep = 6"
+                    >
+                        Siguiente <Icon icon="mdi:arrow-right" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 6: Carga de 5 Videos de Perfil (Opcional con Saltar) -->
+            <div v-if="currentStep === 6" class="sub-view-card">
+                <h2>Videos de Perfil (Opcional)</h2>
+                <p class="step-subtitle">Puedes agregar hasta 5 videos cortos o saltar este paso.</p>
+
+                <div class="photos-grid">
+                    <div
+                        v-for="(video, index) in 5"
+                        :key="index"
+                        class="photo-slot video-slot"
+                        @click="triggerMultiVideoInput(index)"
+                    >
+                        <video v-if="videosPerfil[index]" :src="videosPerfil[index]" class="avatar-img" muted></video>
+                        <div v-else class="plus-icon-container">
+                            <Icon icon="mdi:video-plus" width="28" height="28" style="color: #0056b3;" />
+                        </div>
+                    </div>
+                </div>
+                <input
+                    ref="multiVideoInput"
+                    type="file"
+                    accept="video/*"
+                    class="hidden-input"
+                    @change="onMultiVideoSelected"
+                />
+
+                <div class="actions-footer">
+                    <button class="btn-secondary" @click="currentStep = 5">
+                        <Icon icon="mdi:arrow-left" /> Atrás
+                    </button>
+                    <button
+                        class="btn-secondary skip-btn"
+                        @click="currentStep = 7"
+                    >
+                        Saltar Paso
+                    </button>
+                    <button
+                        class="btn-primary"
+                        @click="currentStep = 7"
+                    >
+                        Siguiente <Icon icon="mdi:arrow-right" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 7: Qué estás buscando (Sexo que busca) -->
+            <div v-if="currentStep === 7" class="sub-view-card">
+                <h2>¿Qué estás buscando?</h2>
+
+                <div class="input-group">
+                    <label>Selecciona el género que te interesa</label>
+                    <div class="options-grid vertical">
+                        <button
+                            type="button"
+                            v-for="opt in ['Hombre', 'Mujer', 'Ambos']"
+                            :key="opt"
+                            :class="['option-chip', buscando === opt ? 'active' : '']"
+                            @click="buscando = opt"
+                        >
+                            {{ opt }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="actions-footer">
+                    <button class="btn-secondary" @click="currentStep = 6">
+                        <Icon icon="mdi:arrow-left" /> Atrás
+                    </button>
+                    <button
+                        class="btn-primary"
+                        :disabled="!isStep7Valid"
                         @click="completarRegistro"
                     >
-                        Completar <Icon icon="mdi:check" />
+                        Completar Registro <Icon icon="mdi:check" />
                     </button>
                 </div>
             </div>
@@ -225,6 +377,11 @@ const started = ref(false)
 const currentStep = ref(1)
 
 const fileInput = ref(null)
+const multiPhotoInput = ref(null)
+const multiVideoInput = ref(null)
+let activePhotoIndex = 0
+let activeVideoIndex = 0
+
 const showCropper = ref(false)
 const cropCanvas = ref(null)
 const menuDate = ref(false)
@@ -244,7 +401,10 @@ const schema = yup.object({
     apellido: yup.string().required('El apellido es obligatorio').min(2, 'Mínimo 2 caracteres'),
     alias: yup.string().required('El alias es obligatorio').min(2, 'Mínimo 2 caracteres'),
     edad: yup.string().required('La fecha de nacimiento es obligatoria'),
-    avatarUrl: yup.string().required('La foto de perfil es obligatoria')
+    sexo: yup.string().required('El sexo es obligatorio'),
+    avatarUrl: yup.string().required('La foto de perfil es obligatoria'),
+    descripcion: yup.string().required('La descripción es obligatoria').min(10, 'Mínimo 10 caracteres'),
+    buscando: yup.string().required('Este campo es obligatorio')
 })
 
 const { errors, handleSubmit, setFieldValue } = useForm({
@@ -254,7 +414,10 @@ const { errors, handleSubmit, setFieldValue } = useForm({
         apellido: clientStore.apellido || '',
         alias: clientStore.alias || '',
         edad: clientStore.edad || '',
-        avatarUrl: clientStore.avatarUrl || ''
+        sexo: clientStore.sexo || '',
+        avatarUrl: clientStore.avatarUrl || '',
+        descripcion: clientStore.descripcion || '',
+        buscando: clientStore.buscando || ''
     }
 })
 
@@ -262,11 +425,16 @@ const { value: nombre } = useField('nombre')
 const { value: apellido } = useField('apellido')
 const { value: alias } = useField('alias')
 const { value: edad } = useField('edad')
+const { value: sexo } = useField('sexo')
 const { value: avatarUrl } = useField('avatarUrl')
+const { value: descripcion } = useField('descripcion')
+const { value: buscando } = useField('buscando')
 
 const avatarBlob = ref(null)
+const fotosPerfil = ref(clientStore.fotosPerfil || ['', '', '', '', ''])
+const videosPerfil = ref(clientStore.videosPerfil || ['', '', '', '', ''])
 
-// Validación robusta y directa basada en los componentes extraídos del string
+// Validación de fecha
 const isDateComplete = computed(() => {
     const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/
     const match = inputValue.value.match(regex)
@@ -299,10 +467,8 @@ onMounted(() => {
     }
 })
 
-// Tipeo fácil con autocompletado automático y sincronización con Vee-Validate
 const onManualInput = (event) => {
-    let val = event.target.value.replace(/\D/g, '') // Extraer solo dígitos
-
+    let val = event.target.value.replace(/\D/g, '')
     if (val.length > 8) val = val.slice(0, 8)
 
     let formatted = ''
@@ -327,7 +493,7 @@ const onManualInput = (event) => {
         if (year >= 1900 && year <= new Date().getFullYear() && month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth) {
             const formattedDateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
             edad.value = formattedDateStr
-            setFieldValue('edad', formattedDateStr) // Sincroniza explícitamente con Vee-Validate
+            setFieldValue('edad', formattedDateStr)
             pickerDate.value = new Date(year, month - 1, day)
         } else {
             edad.value = ''
@@ -337,7 +503,6 @@ const onManualInput = (event) => {
     }
 }
 
-// Sincronizar el picker al desplegar el menú de Vuetify
 const onMenuToggle = (isOpen) => {
     if (isOpen && isDateComplete.value) {
         const [day, month, year] = inputValue.value.split('/')
@@ -345,7 +510,6 @@ const onMenuToggle = (isOpen) => {
     }
 }
 
-// Cierre automático del calendario al seleccionar un día
 const onDateSelected = (date) => {
     if (!date) return
     const d = new Date(date)
@@ -356,7 +520,7 @@ const onDateSelected = (date) => {
 
     const formattedDateStr = `${year}-${month}-${day}`
     edad.value = formattedDateStr
-    setFieldValue('edad', formattedDateStr) // Sincroniza explícitamente con Vee-Validate
+    setFieldValue('edad', formattedDateStr)
     inputValue.value = `${day}/${month}/${year}`
     menuDate.value = false
 }
@@ -368,17 +532,11 @@ const limpiarFecha = () => {
     pickerDate.value = null
 }
 
-const isStep1Valid = computed(() => {
-    return nombre.value && apellido.value && alias.value && !errors.value.nombre && !errors.value.apellido && !errors.value.alias
-})
-
-const isStep2Valid = computed(() => {
-    return isDateComplete.value
-})
-
-const isStep3Valid = computed(() => {
-    return avatarUrl.value && !errors.value.avatarUrl
-})
+const isStep1Valid = computed(() => nombre.value && apellido.value && alias.value && !errors.value.nombre && !errors.value.apellido && !errors.value.alias)
+const isStep2Valid = computed(() => isDateComplete.value && sexo.value)
+const isStep3Valid = computed(() => avatarUrl.value && !errors.value.avatarUrl)
+const isStep4Valid = computed(() => descripcion.value && descripcion.value.length >= 10)
+const isStep7Valid = computed(() => buscando.value !== '')
 
 const limpiarSubView1 = () => {
     nombre.value = ''
@@ -465,11 +623,9 @@ const applyCrop = () => {
     ctx.drawImage(imageObj, imgX, imgY)
     ctx.restore()
 
-    // 1. Obtenemos directamente la cadena Base64 persistente
     const base64Data = canvas.toDataURL('image/png')
     avatarUrl.value = base64Data
 
-    // 2. Opcional: También conservamos el blob por si el store lo requiere para procesamiento binario
     canvas.toBlob((blob) => {
         avatarBlob.value = blob
     }, 'image/png')
@@ -477,15 +633,62 @@ const applyCrop = () => {
     showCropper.value = false
 }
 
+// Lógica de carga múltiple de 5 fotos
+const triggerMultiPhotoInput = (index) => {
+    activePhotoIndex = index
+    multiPhotoInput.value.click()
+}
+
+const onMultiPhotoSelected = (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        fotosPerfil.value[activePhotoIndex] = e.target.result
+    }
+    reader.readAsDataURL(file)
+    event.target.value = ''
+}
+
+// Lógica de carga múltiple de 5 videos opcionales
+const triggerMultiVideoInput = (index) => {
+    activeVideoIndex = index
+    multiVideoInput.value.click()
+}
+
+const onMultiVideoSelected = (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        videosPerfil.value[activeVideoIndex] = e.target.result
+    }
+    reader.readAsDataURL(file)
+    event.target.value = ''
+}
+
 const completarRegistro = handleSubmit(async (formValues) => {
     appStore.setLoading(true)
 
     try {
-        clientStore.setDatosPersonales(formValues.nombre, formValues.apellido, formValues.alias, formValues.edad)
+        clientStore.setDatosPersonales(
+            formValues.nombre,
+            formValues.apellido,
+            formValues.alias,
+            formValues.edad,
+            formValues.sexo,
+            formValues.descripcion,
+            formValues.buscando
+        )
+
+        clientStore.avatarUrl = avatarUrl.value
+        clientStore.fotosPerfil = fotosPerfil.value
+        clientStore.videosPerfil = videosPerfil.value
 
         if (avatarBlob.value) {
             await clientStore.agregarFoto(avatarBlob.value)
-            clientStore.avatarUrl = avatarUrl.value
         }
 
         setTimeout(() => {
@@ -609,6 +812,13 @@ const completarRegistro = handleSubmit(async (formValues) => {
     text-align: center;
 }
 
+.step-subtitle {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    margin-top: -10px;
+}
+
 .input-group {
     display: flex;
     flex-direction: column;
@@ -652,6 +862,71 @@ const completarRegistro = handleSubmit(async (formValues) => {
     outline: none;
     font-size: 16px;
     background: transparent;
+}
+
+.textarea-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+    resize: none;
+    font-family: inherit;
+}
+.textarea-input:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.15);
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.options-grid.vertical {
+    grid-template-columns: 1fr;
+}
+
+.option-chip {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    font-size: 13px;
+}
+
+.option-chip.active {
+    background-color: #0056b3;
+    color: white;
+    border-color: #0056b3;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.photo-slot {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    border: 2px dashed #0056b3;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .error-msg {
@@ -712,12 +987,9 @@ const completarRegistro = handleSubmit(async (formValues) => {
     white-space: nowrap;
 }
 
-.btn-secondary.btn-disabled {
-    background-color: #e0e0e0 !important;
-    color: #999 !important;
-    opacity: 0.6;
-    cursor: not-allowed !important;
-    box-shadow: none !important;
+.skip-btn {
+    background-color: #6c757d !important;
+    color: white !important;
 }
 
 .btn-clear {
