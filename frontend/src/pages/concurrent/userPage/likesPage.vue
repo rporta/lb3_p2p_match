@@ -1,5 +1,5 @@
 <template>
-    <div class="subpage-container">
+    <div class="subpage-container p-[16px]">
         <h3>Tus Likes</h3>
         <p class="subtitle">Personas que han interactuado con tu perfil</p>
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="subpage-container">
+    <div class="subpage-container p-[16px]">
         <h3>Conversaciones</h3>
         <p class="subtitle">Chatea con tus matches</p>
 

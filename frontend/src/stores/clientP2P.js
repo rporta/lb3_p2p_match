@@ -24,10 +24,10 @@ export const useClientP2PStore = defineStore('clientP2P', {
             ojos: 0
         },
         ubicacion: {
-            pais: 'Argentina',
-            provincia: 'Buenos Aires',
-            localidad: 'CABA',
-            barrio: 'Palermo'
+            pais: '',
+            provincia: '',
+            localidad: '',
+            barrio: ''
         },
         estado: 'desconectado',
         avatarUrl: '',

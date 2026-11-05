@@ -38,14 +38,30 @@
 
                 <!-- Esquina Superior Derecha: Botones FAB -->
                 <div class="top-actions">
-                    <button
-                        class="icon-fab"
-                        :class="{ 'has-unread': hasUnreadNotifications }"
-                        @click="goToNotifications"
-                        title="Notificaciones"
-                    >
-                        <Icon icon="mdi:bell" width="22" height="22" style="color: white;" />
-                    </button>
+                    <!-- Botón de Notificaciones con Badge Verde y Cambio de Color -->
+                    <div class="notification-fab-wrapper">
+                        <button
+                            class="icon-fab"
+                            :class="{ 'all-read': notifStore.unreadCount === 0 }"
+                            @click="goToNotifications"
+                            title="Notificaciones"
+                        >
+                            <Icon
+                                :icon="notifStore.unreadCount > 0 ? 'mdi:bell' : 'mdi:bell-off'"
+                                width="22"
+                                height="22"
+                                style="color: white;"
+                            />
+                        </button>
+                        <!-- Badge Contador Verde en la Esquina -->
+                        <span
+                            v-if="notifStore.unreadCount > 0"
+                            class="notification-badge-counter"
+                        >
+                            {{ notifStore.unreadCount }}
+                        </span>
+                    </div>
+
                     <button class="icon-fab" @click="goToSettings" title="Configuración de Perfil">
                         <Icon icon="mdi:cog" width="22" height="22" style="color: white;" />
                     </button>
@@ -608,5 +624,59 @@ const goToSettings = () => {
     font-weight: bold;
     flex: 1;
     cursor: pointer;
+}
+.notification-fab-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Color azul por defecto cuando hay notificaciones por leer */
+.icon-fab {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
+    transition: background-color 0.2s, transform 0.15s ease;
+}
+
+.icon-fab:hover {
+    transform: scale(1.05);
+}
+
+/* Cambia a color rojo cuando ya no quedan notificaciones pendientes (unreadCount === 0) */
+.icon-fab.all-read {
+    background-color: #d9534f;
+    box-shadow: 0 4px 10px rgba(217, 83, 79, 0.4);
+}
+
+.icon-fab.all-read:hover {
+    background-color: #c9302c;
+}
+
+/* Estilo del contador verde flotante */
+.notification-badge-counter {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: #2e7d32; /* Verde oficial de notificaciones */
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    pointer-events: none;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="encounters-container">
+    <div class="encounters-container p-[16px]">
         <div class="cards-stack">
             <!-- Si no hay más perfiles -->
             <div v-if="profiles.length === 0" class="no-more-profiles">

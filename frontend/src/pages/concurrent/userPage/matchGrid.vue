@@ -1,5 +1,5 @@
 <template>
-    <div class="match-grid-container">
+    <div class="match-grid-container p-[16px]">
         <!-- Título y descripción de la sección -->
         <div class="grid-header">
             <h3>Explorar Matches</h3>
