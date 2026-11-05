@@ -60,7 +60,7 @@ const notifStore = useNotificationStore()
 
 const goBack = () => {
     notifStore.markAllAsRead()
-    router.push({ name: 'ConcurrentUser' })
+    router.push({ name: 'ConcurrentUserPage' })
 }
 
 const deleteNotification = (id) => {

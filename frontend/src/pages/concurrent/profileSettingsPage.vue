@@ -21,7 +21,7 @@
 
             <!-- Opciones de Ajuste -->
             <div class="settings-list">
-                <div class="setting-item">
+                <div class="setting-item" @click="() => router.push({ name: 'EditPersonalInformationPage' })">
                     <Icon icon="mdi:account-edit-outline" width="22" height="22" style="color: #0056b3;" />
                     <span>Editar información personal</span>
                     <Icon icon="mdi:chevron-right" width="20" height="20" style="color: #ccc;" />
@@ -39,9 +39,15 @@
                     <Icon icon="mdi:chevron-right" width="20" height="20" style="color: #ccc;" />
                 </div>
 
-                <div class="setting-item" @click="() => router.push({ name: 'Home' })">
+                <div class="setting-item" @click="() => router.push({ name: 'HomePage' })">
                     <Icon icon="mdi:account-edit-outline" width="22" height="22" style="color: #0056b3;" />
                     <span>Test P2P</span>
+                    <Icon icon="mdi:chevron-right" width="20" height="20" style="color: #ccc;" />
+                </div>
+
+                <div class="setting-item" @click="router.push({ name: 'ConfigLanguagePage' })">
+                    <Icon icon="mdi:translate" width="22" height="22" style="color: #0056b3;" />
+                    <span>Configurar Idioma</span>
                     <Icon icon="mdi:chevron-right" width="20" height="20" style="color: #ccc;" />
                 </div>
 
@@ -65,7 +71,7 @@ const clientStore = useClientP2PStore()
 const resolvedAvatarUrl = ref('')
 
 const goBack = () => {
-    router.push({ name: 'ConcurrentUser' })
+    router.push({ name: 'ConcurrentUserPage' })
 }
 
 const cerrarSesion = () => {
@@ -75,7 +81,7 @@ const cerrarSesion = () => {
     clientStore.alias = ''
     clientStore.avatarUrl = ''
     clientStore.id = null
-    router.push({ name: 'NewUser' })
+    router.push({ name: 'NewUserPage' })
 }
 
 // Imagen por defecto o placeholder vectorial si no hay nada

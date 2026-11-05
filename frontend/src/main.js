@@ -4,6 +4,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createI18n } from 'vue-i18n'
 import App from './App.vue'
 import router from './router'
+import { useAppStore } from '@/stores/appStore'
 
 // Vuetify
 import 'vuetify/styles'
@@ -17,11 +18,12 @@ import './assets/main.scss'
 // Locales
 import esp from './locales/esp.json'
 import ing from './locales/ing.json'
+import vuetifyLangMap from './locales/vuetifyLangMap.json' // Mapeo de códigos de idioma personalizados hacia Vuetify ('esp' -> 'es', 'ing' -> 'en')
+import { es, en } from 'vuetify/locale' // Idiomas de Vuetify
 
 // Importaciones para Iconify offline
 import { Icon, addCollection } from '@iconify/vue'
 import mdiIcons from '@iconify-json/mdi/icons.json'
-import { es } from 'vuetify/locale' // Importar idioma español
 
 // importaciones custom plugins
 import mobile from './plugins/mobile'
@@ -30,9 +32,21 @@ import platform from './plugins/platform'
 // Registramos toda la colección de MDI localmente para el componente <icon>
 addCollection(mdiIcons)
 
+// 1. Inicializamos la aplicación y Pinia primero para recuperar el estado persistido
+const app = createApp(App)
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+app.use(pinia)
+
+// 2. Obtenemos el idioma guardado en el appStore (por defecto 'esp')
+const appStore = useAppStore()
+const savedLocale = appStore.locale || 'esp'
+
+
+
 const i18n = createI18n({
     legacy: false,
-    locale: 'esp', // Español por defecto
+    locale: savedLocale, // Sincronizado con el store persistente
     fallbackLocale: 'esp',
     messages: { esp, ing }
 })
@@ -41,20 +55,13 @@ const vuetify = createVuetify({
     components,
     directives,
     locale: {
-        locale: 'es',
+        locale: vuetifyLangMap[savedLocale] || 'es',
         fallback: 'en',
-        messages: { es }
+        messages: { es, en }
     }
 })
 
-const app = createApp(App)
-
-const pinia = createPinia()
-
-// Habilitar persistencia global en Pinia
-pinia.use(piniaPluginPersistedstate)
-
-app.use(pinia)
+// Registramos el router, i18n y vuetify
 app.use(router)
 app.use(vuetify)
 app.use(i18n)
@@ -62,9 +69,7 @@ app.use(i18n)
 // Registramos el componente global <icon>
 app.component('icon', Icon)
 
-// Regist
-
-// Registramos un pequeño plugin para registrar globalmente $mobile & $platform
+// Registramos plugins custom de plataforma y móvil
 app.use(mobile)
 app.use(platform)
 

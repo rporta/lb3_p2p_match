@@ -5,7 +5,9 @@ import HomePage from '@/pages/homePage.vue'
 import NewUserPage from '@/pages/newUserPage.vue'
 import UserPage from '@/pages/concurrent/userPage.vue'
 import NotificationPage from '@/pages/concurrent/notificationPage.vue'
-import ProfileSettings from '@/pages/concurrent/profileSettings.vue'
+import ProfileSettingsPage from '@/pages/concurrent/profileSettingsPage.vue'
+import EditPersonalInformationPage from '@/pages/concurrent/editPersonalInformationPage.vue'
+import ConfigLanguajePage from '@/pages/concurrent/configLanguajePage.vue'
 
 function  delay (ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
@@ -44,15 +46,15 @@ const routes = [
             await showSplash()
 
             if (tieneDatosCompletos()) {
-                return { name: 'ConcurrentUser' }
+                return { name: 'ConcurrentUserPage' }
             } else {
-                return { name: 'NewUser' }
+                return { name: 'NewUserPage' }
             }
         }
     },
     {
         path: '/new-user',
-        name: 'NewUser',
+        name: 'NewUserPage',
         component: NewUserPage,
         beforeEnter: async (to, from) => {
 
@@ -60,28 +62,28 @@ const routes = [
             await showSplash()
 
             if (tieneDatosCompletos()) {
-                return { name: 'ConcurrentUser' }
+                return { name: 'ConcurrentUserPage' }
             }
             return true // Si es nuevo, se queda en esta página
         }
     },
-{
+    {
         path: '/concurrent-user',
-        name: 'ConcurrentUser',
+        name: 'ConcurrentUserPage',
         component: UserPage,
         beforeEnter: async (to, from) => {
             const clientStore = useClientP2PStore()
             const appStore = useAppStore()
 
             // Si no venimos de notificación o configuración, activamos el splash
-            if (!['NotificationPage', 'ProfileSettings'].includes(from.name)) {
+            if (!['NotificationPage', 'ProfileSettingsPage'].includes(from.name)) {
                 await showSplash()
             }
 
             if (tieneDatosCompletos()) {
                 return true
             } else {
-                return { name: 'NewUser' }
+                return { name: 'NewUserPage' }
             }
         }
     },
@@ -93,25 +95,49 @@ const routes = [
             if (tieneDatosCompletos()) {
                 return true
             } else {
-                return { name: 'NewUser' }
+                return { name: 'NewUserPage' }
             }
         }
     },
     {
         path: '/profile-settings',
-        name: 'ProfileSettings',
-        component: ProfileSettings,
+        name: 'ProfileSettingsPage',
+        component: ProfileSettingsPage,
         beforeEnter: (to, from) => {
             if (tieneDatosCompletos()) {
                 return true
             } else {
-                return { name: 'NewUser' }
+                return { name: 'NewUserPage' }
+            }
+        }
+    },
+    {
+        path: '/edit-personal-information',
+        name: 'EditPersonalInformationPage',
+        component: EditPersonalInformationPage,
+        beforeEnter: (to, from) => {
+            if (tieneDatosCompletos()) {
+                return true
+            } else {
+                return { name: 'NewUserPage' }
+            }
+        }
+    },
+    {
+        path: '/config-language',
+        name: 'ConfigLanguagePage',
+        component: ConfigLanguajePage,
+        beforeEnter: (to, from) => {
+            if (tieneDatosCompletos()) {
+                return true
+            } else {
+                return { name: 'NewUserPage' }
             }
         }
     },
     {
         path: '/home',
-        name: 'Home',
+        name: 'HomePage',
         component: HomePage
     }
 ]

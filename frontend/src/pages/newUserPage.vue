@@ -693,7 +693,7 @@ const completarRegistro = handleSubmit(async (formValues) => {
 
         setTimeout(() => {
             appStore.setLoading(false)
-            router.push({ name: 'ConcurrentUser' })
+            router.push({ name: 'ConcurrentUserPage' })
         }, 1200)
 
     } catch (error) {

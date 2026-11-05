@@ -357,7 +357,7 @@ const goToNotifications = () => {
 }
 
 const goToSettings = () => {
-    router.push({ name: 'ProfileSettings' })
+    router.push({ name: 'ProfileSettingsPage' })
 }
 </script>
 
