@@ -41,10 +41,10 @@
 
                         <!-- Botones integrados en la parte inferior de la tarjeta -->
                         <div class="card-actions-overlay">
-                            <button class="action-fab btn-reject" @click.stop="triggerSwipe('right')" title="Rechazar">
+                            <button class="action-fab btn-reject" @click.stop="triggerSwipe('left')" title="Rechazar">
                                 <Icon icon="mdi:close" width="28" height="28" style="color: #ff4d4d;" />
                             </button>
-                            <button class="action-fab btn-like" @click.stop="triggerSwipe('left')" title="Me gusta">
+                            <button class="action-fab btn-like" @click.stop="triggerSwipe('right')" title="Me gusta">
                                 <Icon icon="mdi:heart" width="28" height="28" style="color: #28a745;" />
                             </button>
                         </div>

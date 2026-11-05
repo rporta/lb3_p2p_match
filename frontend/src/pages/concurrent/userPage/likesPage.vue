@@ -10,7 +10,7 @@
                 </div>
                 <div class="like-details">
                     <h4>Persona {{ i }}</h4>
-                    <p>Le gustó tu foto de perfil</p>
+                    <p>Le gustó tu perfil</p>
                 </div>
             </div>
         </div>
