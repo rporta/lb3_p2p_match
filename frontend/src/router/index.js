@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useClientP2PStore } from '@/stores/clientP2P'
+import { useClientP2PStore } from '@/stores/clientP2PStore'
 import { useAppStore } from '@/stores/appStore'
 import HomePage from '@/pages/homePage.vue'
 import NewUserPage from '@/pages/newUserPage.vue'

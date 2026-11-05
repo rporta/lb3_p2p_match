@@ -252,7 +252,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useClientP2PStore } from '@/stores/clientP2P'
+import { useClientP2PStore } from '@/stores/clientP2PStore'
 import { useAppStore } from '@/stores/appStore'
 
 const router = useRouter()

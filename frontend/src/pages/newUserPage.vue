@@ -366,7 +366,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
-import { useClientP2PStore } from '@/stores/clientP2P'
+import { useClientP2PStore } from '@/stores/clientP2PStore'
 import { useAppStore } from '@/stores/appStore'
 
 const router = useRouter()

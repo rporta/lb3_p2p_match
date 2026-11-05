@@ -197,7 +197,7 @@
 <script setup>
 import { ref, computed, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
-import { useClientP2PStore } from '@/stores/clientP2P'
+import { useClientP2PStore } from '@/stores/clientP2PStore'
 import { useNotificationStore } from '@/stores/notificationStore'
 import { Country, State, City } from 'country-state-city'
 
