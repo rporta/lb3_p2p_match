@@ -27,7 +27,9 @@ export const useClientP2PStore = defineStore('clientP2P', {
             pais: '',
             provincia: '',
             localidad: '',
-            barrio: ''
+            barrio: '',
+            lat: '',
+            lon: '',
         },
         estado: 'desconectado',
         avatarUrl: '',
@@ -61,7 +63,11 @@ export const useClientP2PStore = defineStore('clientP2P', {
         },
 
         setUbicacion(pais, provincia, localidad, barrio) {
-            this.ubicacion = { pais, provincia, localidad, barrio }
+            this.ubicacion = { ...this.ubicacion, pais, provincia, localidad, barrio }
+        },
+
+        setLatLong(lat, lon) {
+            this.ubicacion = { ...this.ubicacion, lat, lon }
         },
 
         async detectarUbicacionGPS() {
@@ -75,6 +81,8 @@ export const useClientP2PStore = defineStore('clientP2P', {
                     async (position) => {
                         const lat = position.coords.latitude
                         const lon = position.coords.longitude
+
+                        this.setLatLong(lat, lon)
 
                         try {
                             const response = await fetch(
