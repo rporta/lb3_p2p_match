@@ -14,7 +14,7 @@ X - Cuando se inicia un chat multimedia, deseo que el receptor no entre en foco 
 
 ## conectar con store de corazon
 
-- /concurrent-user->encountersPage, si ya no hay mas corazon disponible en store, hacer animacion moviendo la carta como si fuera un No, y no restar 
+- /concurrent-user->encountersPage, si ya no hay mas corazon disponible en store, hacer animacion moviendo la carta como si fuera un No, y no restar corazones
 - /concurrent-user->encountersPage, Si no hay mas matches disponibles, mostrar
 
 ## Crear nueva ruta (/match-profile)
