@@ -11,12 +11,27 @@
         <div class="content-body">
             <!-- Tarjeta con resumen del usuario cargado desde Pinia -->
             <div class="profile-card">
-                <div class="avatar-wrapper">
+                <!-- Avatar con Borde Dinámico según Estado -->
+                <div class="avatar-wrapper" :class="clientStore.estado === 'conectado' ? 'status-online' : 'status-offline'">
                     <img v-if="clientStore.avatarUrl" :src="resolvedAvatarUrl" class="avatar-img" />
                     <Icon v-else icon="mdi:account-circle" width="80" height="80" style="color: #9e9e9e;" />
                 </div>
                 <h3>{{ clientStore.nombre }} {{ clientStore.apellido }}</h3>
                 <span class="alias-tag">@{{ clientStore.alias }}</span>
+            </div>
+
+            <!-- Selector Rápido de Estado -->
+            <div class="status-quick-card">
+                <div class="select-wrapper">
+                    <select
+                        :value="clientStore.estado"
+                        @change="onStatusChange"
+                        class="status-select w-full"
+                    >
+                        <option value="conectado">🟢 Conectado</option>
+                        <option value="desconectado">🔴 Desconectado</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Opciones de Ajuste -->
@@ -68,11 +83,18 @@ import { ref, onMounted, watch } from 'vue'
 const router = useRouter()
 const clientStore = useClientP2PStore()
 
-
 const resolvedAvatarUrl = ref('')
 
 const goBack = () => {
     router.push({ name: 'ConcurrentUserPage' })
+}
+
+const toggleEstado = (nuevoEstado) => {
+    if (nuevoEstado === 'conectado') {
+        clientStore.setConectado()
+    } else {
+        clientStore.setDesconectado()
+    }
 }
 
 const cerrarSesion = () => {
@@ -97,8 +119,16 @@ const resolveAvatar = () => {
         return
     }
 
-    // Como ahora almacenamos Base64, se asigna y renderiza de inmediato de forma segura
     resolvedAvatarUrl.value = rawUrl
+}
+
+const onStatusChange = (event) => {
+    const nuevoEstado = event.target.value
+    if (nuevoEstado === 'conectado') {
+        clientStore.setConectado()
+    } else {
+        clientStore.setDesconectado()
+    }
 }
 
 // Ejecutar al montar el componente
@@ -158,7 +188,7 @@ watch(() => clientStore.avatarUrl, () => {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .profile-card {
@@ -177,11 +207,22 @@ watch(() => clientStore.avatarUrl, () => {
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 12px;
-    border: 3px solid #0056b3;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f0f0f0;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Borde dinámico según estado */
+.avatar-wrapper.status-online {
+    border: 4px solid #2e7d32; /* Verde Conectado */
+    box-shadow: 0 0 10px rgba(46, 125, 50, 0.35);
+}
+
+.avatar-wrapper.status-offline {
+    border: 4px solid #d9534f; /* Rojo Desconectado */
+    box-shadow: 0 0 10px rgba(217, 83, 79, 0.35);
 }
 
 .avatar-img {
@@ -200,6 +241,58 @@ watch(() => clientStore.avatarUrl, () => {
     font-size: 14px;
     color: #666;
     margin-top: 4px;
+}
+
+/* Tarjeta de Selección Rápida de Estado */
+.status-quick-card {
+    background-color: white;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #444;
+}
+
+.status-toggle-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.status-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8fafc;
+    color: #666;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.status-btn.btn-online.active {
+    background-color: #2e7d32;
+    color: white;
+    border-color: #2e7d32;
+    box-shadow: 0 2px 6px rgba(46, 125, 50, 0.3);
+}
+
+.status-btn.btn-offline.active {
+    background-color: #d9534f;
+    color: white;
+    border-color: #d9534f;
+    box-shadow: 0 2px 6px rgba(217, 83, 79, 0.3);
 }
 
 .settings-list {

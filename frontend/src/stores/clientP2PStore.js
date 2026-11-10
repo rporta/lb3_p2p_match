@@ -38,13 +38,11 @@ export const useClientP2PStore = defineStore('clientP2P', {
     }),
 
     actions: {
-        setConectado(id) {
-            this.id = id
+        setConectado() {
             this.estado = 'conectado'
         },
 
         setDesconectado() {
-            this.id = null
             this.estado = 'desconectado'
         },
 
